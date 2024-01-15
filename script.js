@@ -10,111 +10,193 @@ const map = new mapboxgl.Map({
     container: 'map', // container ID
     // style: 'mapbox://styles/mapbox/streets-v12', // style URL
     style: 'mapbox://styles/ptrszkwcz/clqmt03br00g201qrfnt9442u',
-    center: [2.8, 48.98661300179635], // starting position [lng, lat]
-    zoom: 4 // starting zoom
+    center: [-73.98203506985122, 40.65412809925644], // starting position [lng, lat]
+    zoom: 14 // starting zoom
 });
 
 // Dont forget this part for Hover!
 let hoveredPolygonId = null;
 let clickedPolygonId = null;
 
-const cats = ['Biomass','Coal','Gas','Geothermal','Hydro','Nuclear','Oil','Solar','Tidal','Wind'];
-const cat_labels = ['Biomass','Coal','Gas','Geothermal','Hydro','Nuclear','Oil','Solar','Wave & Tidal','Wind'];;
+// const cats = ['Biomass','Coal','Gas','Geothermal','Hydro','Nuclear','Oil','Solar','Tidal','Wind'];
+// const cat_labels = ['Biomass','Coal','Gas','Geothermal','Hydro','Nuclear','Oil','Solar','Wave & Tidal','Wind'];;
+const cats = ['YearBuilt'];
+const cat_labels = ["Year Built"]
+
 var filter_cats = [];
 
-const anals = ["anal1", "anal2", "anal3"];
 
-const radius_styling = [
-    [ 'interpolate', ['linear'], ['get', 'capacity_m'],
-        0, 1.5,
-        5000,25],
-    [ 'interpolate', ['linear'], ['get', 'estimate_4'],
-        0, 1.5,
-        33000,25
-    ],
-    [ 'interpolate', ['linear'], ['get', 'CapFac'],
-        0.5, 1.5,
-        1,25]
+fill_styling = [
+    [ 'interpolate', ['linear'], ['get', 'YearBuilt'],
+        1900, '#142a8c',
+        1950, '#ab2dc4',
+        2000, '#d92e4a'],
+    [ 'interpolate', ['linear'], ['get', 'BuiltFAR'],
+        0, '#0b5c5c',
+        5, '#2dd668',
+        10, '#2efc1c'],
+    [ 'match', ['get','LandUse'],
+        '01', '#9e5418',
+        '02', '#9514c4',
+        '03', '#fc0303',
+        '04', '#e01075',
+        '05', '#8800ff',
+        '06', '#0398fc',
+        '07', '#ff00f7',
+        '08', '#eb7f7f',
+        '09', '#e3bb0e',
+        '10', '#1859c9',
+        '11', '#12c474',
+        '#000000']
 ]
 
-// let 'A-PrimStyle' = "anal1"
+const prim_style_layer = 'BK_Pluto_4326-1r3l0b'
+
+function setclasses(intlist){
+    document.getElementById("entry-".concat(intlist[0])).classList.toggle("active");
+    document.getElementById("toggle-".concat(intlist[0])).classList.toggle("active");
+    document.getElementById("label-".concat(intlist[0])).classList.toggle("active");
+
+    for (let i = 0; i < (intlist.length-1); i++){
+        document.getElementById("entry-".concat(intlist[i+1])).classList.remove("active");
+        document.getElementById("toggle-".concat(intlist[i+1])).classList.remove("active");
+        document.getElementById("label-".concat(intlist[i+1])).classList.remove("active");
+    }
+}
+
+let viz_type = 3; //set this to list length of fill_styling (or any random integer not in range list length)
+
+function toggle0() {
+    let viz_status = map.getLayoutProperty('A-PrimStyle', 'visibility');
+
+    if ((viz_type != 0) || (viz_type == 0 && viz_status === "none")){
+        map.setLayoutProperty('A-PrimStyle', 'visibility','visible');
+        map.setPaintProperty('A-PrimStyle', 'fill-color', fill_styling[0]);
+        viz_type = 0;
+    }
+    else {
+        map.setLayoutProperty('A-PrimStyle', 'visibility', 'none');
+        viz_type = 3;
+    }
+
+    setclasses([0,1,2])
+}
+
+function toggle1() {
+    let viz_status = map.getLayoutProperty('A-PrimStyle', 'visibility');
+
+    if ((viz_type != 1) || (viz_type == 1 && viz_status === "none")){
+        map.setLayoutProperty('A-PrimStyle', 'visibility','visible');
+        map.setPaintProperty('A-PrimStyle', 'fill-color', fill_styling[1])
+        viz_type = 1;
+    }
+    else {
+        map.setLayoutProperty('A-PrimStyle', 'visibility', 'none');
+        viz_type = 3;
+    }
+
+    setclasses([1,0,2])
+}
+
+function toggle2() {
+    let viz_status = map.getLayoutProperty('A-PrimStyle', 'visibility');
+
+    if ((viz_type != 2) || (viz_type == 2 && viz_status === "none")){
+        map.setLayoutProperty('A-PrimStyle', 'visibility','visible');
+        map.setPaintProperty('A-PrimStyle', 'fill-color', fill_styling[2])
+        viz_type = 2;
+    }
+    else {
+        map.setLayoutProperty('A-PrimStyle', 'visibility', 'none');
+        viz_type = 3;
+    }
+
+    setclasses([2,0,1])
+}
 
 map.on('load', () => {
 
     map.addSource('source-A', {
         'type': 'vector',
-        'url': "mapbox://ptrszkwcz.clqq16a8mb7jd1up43l248y74-5f80h",
-        'promoteId':'gppd_idnr' // Because mapbox fucks up when assigning IDs, make own IDs in QGIS and then set here!!!
+        'url': "mapbox://ptrszkwcz.ckwtmvi8",
+        'promoteId':'UniqueID' // Because mapbox fucks up when assigning IDs, make own IDs in QGIS and then set here!!!
     });
 
-
-    map.addLayer({
+       map.addLayer({
         'id': 'A-PrimStyle',
-        'type': 'circle',
+        'type': 'fill',
         'source': 'source-A', 
-        'source-layer':'Power_Europe_Select_good',
-        'layout': {},
+        'source-layer':prim_style_layer,
+        'layout': {
+            'visibility': 'none'
+        },
         'paint': {
-            'circle-radius': radius_styling[0],
-            // 'circle-color': , 
-            'circle-color': [ 'match', ['get','primary_fu'],
-                'Biomass', '#9e5418',
-                // 'Biomass', '#9514c4',
-                'Coal', '#fc0303',
-                'Gas', '#e01075',
-                'Geothermal', '#8800ff',
-                'Hydro', '#0398fc',
-                'Nuclear', '#ff00f7',
-                'Oil', '#eb7f7f',
-                'Solar', '#e3bb0e',
-                'Tidal', '#1859c9',
-                'Wind', '#12c474',
-                '#000000'
-            ], 
-            'circle-opacity': 0.5
+            'fill-opacity': 0.7,
+            'fill-color': fill_styling[0]
             },
-    });
+        });
+
 
     //HIHGLIGHT ON HOVER, POINT ---------------------------------------------------------------
     map.addLayer({
-        'id': 'A-Hover-point',
-        'type': 'circle',
-        'source': 'source-A', // reference the data source
-        'source-layer':'Power_Europe_Select_good',
+        'id': 'A-Hover-line',
+        'type': 'line',
+        'source': 'source-A',
+        'source-layer':prim_style_layer, 
         'layout': {},
         'paint': {
-            'circle-color': "rgba(0,0,0,0)",
-            'circle-stroke-color': mystyle.getPropertyValue("--highl_color"),
-            'circle-stroke-width': [ 'case', 
-                ['boolean', ['feature-state', 'hover'], false], 2, 0],
-            'circle-radius': radius_styling[0],
-            'circle-opacity': [ 'case', 
-            ['boolean', ['feature-state', 'hover'], false], 1, 0]
+            'line-color': [ 'case', 
+                ['boolean', ['feature-state', 'hover'], false], mystyle.getPropertyValue("--highl_color"), '#636363'],
+            'line-width': [ 'case', 
+                ['boolean', ['feature-state', 'hover'], false], 2.5, 0],
+        }
+    }); 
+
+    map.addLayer({
+        'id': 'A-Hover-fill',
+        'type': 'fill',
+        'source': 'source-A', 
+        'source-layer':prim_style_layer, 
+        'layout': {},
+        'paint': {
+            'fill-color': mystyle.getPropertyValue("--highl_color"),
+            'fill-opacity': [ 'case', 
+                ['boolean', ['feature-state', 'hover'], false], 0.5, 0],
         }
     }); 
 
 
     //HIHGLIGHT ON CLICK, POIMT ---------------------------------------------------------------
     map.addLayer({
-        'id': 'A-Click-point',
-        'type': 'circle',
-        'source': 'source-A', // reference the data source
-        'source-layer':'Power_Europe_Select_good',
+        'id': 'A-Click-line',
+        'type': 'line',
+        'source': 'source-A', 
+        'source-layer':prim_style_layer,
         'layout': {},
         'paint': {
-            'circle-color': "rgba(0,0,0,0)",
-            'circle-stroke-color': mystyle.getPropertyValue("--highl_color"),
-            'circle-stroke-width': [ 'case', 
-                ['boolean', ['feature-state', 'highl_click'], false], 2, 0],
-            'circle-radius': radius_styling[0],
-            'circle-opacity': [ 'case', 
-            ['boolean', ['feature-state', 'highl_click'], false], 1, 0]
+            'line-color': [ 'case', 
+                ['boolean', ['feature-state', 'click'], false], mystyle.getPropertyValue("--highl_color"), '#636363'],
+            'line-width': [ 'case', 
+                ['boolean', ['feature-state', 'click'], false], 4, 0],
+        }
+    }); 
+
+    map.addLayer({
+        'id': 'A-Click-fill',
+        'type': 'fill',
+        'source': 'source-A', 
+        'source-layer':prim_style_layer,
+        'layout': {},
+        'paint': {
+            'fill-color': mystyle.getPropertyValue("--highl_color"),
+            'fill-opacity': [ 'case', 
+                ['boolean', ['feature-state', 'click'], false], 0.5, 0],
         }
     }); 
 
     // POPUP ON CLICK ---------------------------------------------------------------
     const popup = new mapboxgl.Popup({
-        closeButton: false,
+        // closeButton: false,
     });
 
     // this function finds the center of a feature (to set popup) 
@@ -147,29 +229,51 @@ map.on('load', () => {
         return center;
     }
 
+    // this function adds a common to numbers  
+    function numberWithCommas(x) {
+        x = x.toString();
+        var pattern = /(-?\d+)(\d{3})/;
+        while (pattern.test(x))
+            x = x.replace(pattern, "$1,$2");
+        return x;
+    }
+
     map.on('click', 'A-PrimStyle', (e) => {
         new mapboxgl.Popup()
         feature = e.features[0]
         // console.log(feature.geometry.coordinates[0])
-        popup.setLngLat(feature.geometry.coordinates)
-        // popup.setLngLat(getFeatureCenter(feature))
+
+        // clean popup numbers 
+        let plant_cap = numberWithCommas(Math.round(feature.properties.capacity_m))
+        let pow_gen = numberWithCommas(Math.round(feature.properties.estimate_4))
+        let cap_fac = Math.round(feature.properties.CapFac*100)
+
+        // popup.setLngLat(feature.geometry.coordinates)
+        popup.setLngLat(getFeatureCenter(feature))
         // popup.setLngLat(e.lngLat)
-        .setHTML(`<poptit>
-                    ${feature.properties.name}
-                    </poptit>
-                <div class = "pop-lines"></div>
-                <div class = "pop-session">
-                  <left>Primary Fuel</left><right>${feature.properties.primary_fu}</right>
+        .setHTML(`
+                <div class = "pop-title">${feature.properties.name}</div>
+                <div class = "pop-line"></div>
+
+                <div class = "pop-entry">
+                    <div class = "pop-field">Primary Fuel</div>
+                    <div class = "pop-value">${feature.properties.primary_fu}</div>
                 </div>
-                <div class = "pop-session">
-                    <left>Capacity</left><right>${feature.properties.capacity_m}</right>
+                <div class = "pop-entry">
+                    <div class = "pop-field">Plant Capacity</div>
+                    <div class = "pop-unit">(MW)</div>
+                    <div class = "pop-value">${plant_cap}</div>
                 </div>
-                <div class = "pop-session">
-                    <left>Power Generation</left><right>${feature.properties.estimate_4}</right>
+                <div class = "pop-entry">
+                    <div class = "pop-field">Power Generation</div>
+                    <div class = "pop-unit">(GW)</div>
+                    <div class = "pop-value">${pow_gen}</div>
                 </div>
-                <div class = "pop-session">
-                <left>Capacity Factor</left><right>${feature.properties.CapFac}</right>
-            </div>
+                <div class = "pop-entry">
+                    <div class = "pop-field">Capacity Factor</div>
+                    <div class = "pop-unit">%</div>
+                    <div class = "pop-value">${cap_fac}</div>
+                </div>
                   `)
         .addTo(map);
     });
@@ -179,8 +283,8 @@ map.on('load', () => {
         if (e.features.length > 0) {
             if (clickedPolygonId !== null) {
                 map.setFeatureState(
-                    { source: 'source-A', sourceLayer: 'Power_Europe_Select_good', id: clickedPolygonId },
-                    { click: false, highl_click: false }
+                    { source: 'source-A', sourceLayer: prim_style_layer, id: clickedPolygonId },
+                    { click: false}
                     );
             }
 
@@ -188,8 +292,8 @@ map.on('load', () => {
             // hoveredPolygonId = e.features[0].properties.featID;
 
             map.setFeatureState(
-                { source: 'source-A', sourceLayer: 'Power_Europe_Select_good', id: clickedPolygonId },
-                { click: true, highl_click: true }
+                { source: 'source-A', sourceLayer: prim_style_layer, id: clickedPolygonId },
+                { click: true}
             );
         } 
     });
@@ -205,8 +309,8 @@ map.on('load', () => {
         }
         if (counter == 0) {
             map.setFeatureState(
-                    { source: 'source-A', sourceLayer: 'Power_Europe_Select_good', id: clickedPolygonId },
-                    { highl_click: false }
+                    { source: 'source-A', sourceLayer: prim_style_layer, id: clickedPolygonId },
+                    { click: false }
                 );
         }
     }); 
@@ -229,7 +333,7 @@ map.on('load', () => {
 
             if (hoveredPolygonId !== null) {
                 map.setFeatureState(
-                    { source: 'source-A', sourceLayer: 'Power_Europe_Select_good', id: hoveredPolygonId },
+                    { source: 'source-A', sourceLayer: prim_style_layer, id: hoveredPolygonId },
                     { hover: false }
                     );
             }
@@ -238,7 +342,7 @@ map.on('load', () => {
             // hoveredPolygonId = e.features[0].properties.featID;
 
             map.setFeatureState(
-                { source: 'source-A', sourceLayer: 'Power_Europe_Select_good', id: hoveredPolygonId },
+                { source: 'source-A', sourceLayer: prim_style_layer, id: hoveredPolygonId },
                 { hover: true }
             );
         }
@@ -249,106 +353,11 @@ map.on('load', () => {
     map.on('mouseleave', 'A-PrimStyle', () => {
         if (hoveredPolygonId !== null) {
             map.setFeatureState(
-                { source: 'source-A', sourceLayer: 'Power_Europe_Select_good', id: hoveredPolygonId },
+                { source: 'source-A', sourceLayer: prim_style_layer, id: hoveredPolygonId },
                 { hover: false }
             );
         }
         hoveredPolygonId = null;
     });
-
-
-
-    // CLICK TO FILTER (INTEGRATED INTO LEGEND) ---------------------------------------------------------------
-
-    for (let i = 0; i < cats.length; i++) {
-
-        const hash = "#"
-        const ID_name = hash.concat(cats[i])
-
-
-        const sessionDiv = document.querySelector(ID_name);
-
-        // console.log(sessionDiv)
-
-        sessionDiv.addEventListener('click', (e) => {
-            // console.log(e.srcElement)
-            filter_select = e.target.id
-
-            if (filter_cats.includes(filter_select)){
-
-                const del_index = filter_cats.indexOf(filter_select);
-                const new_filter =filter_cats.splice(del_index, 1);
-                sessionDiv.classList.add("checked");
-                document.getElementById(cats[i]).getElementsByClassName("hr-square")[0].classList.remove("nocheck")
-            }
-            else{
-   
-                const new_filter = filter_cats.push(filter_select)
-                sessionDiv.checked = false;
-                sessionDiv.classList.remove("checked");
-                document .getElementById(cats[i]).getElementsByClassName("hr-square")[0].classList.add("nocheck")
-            }
-
-            if (filter_cats.length > 0){
-                map.setFilter('A-PrimStyle', ['match', ['get', 'primary_fu'], filter_cats,false,true]);
-            }
-            else{
-                map.setFilter('A-PrimStyle', null)
-            }
-        });
-    }
-
-    // CLICK TO CHANGE ANALYSIS ---------------------------------------------------------------
-
-    const dropDownButton = document.querySelector('#dropdown-butt');
-
-    for (let i = 0; i < anals.length; i++) {
-
-        const hash = "#"
-        const ID_name = hash.concat(anals[i])
-
-        const sessionDiv = document.querySelector(ID_name);
-
-        sessionDiv.onclick = function (e) {
-            // const clickedLayer = this.textContent;
-            const clickedLayer = sessionDiv.id
-
-            e.preventDefault();
-            e.stopPropagation();
-
-            for (let i = 0; i < anals.length; i++){
-                const hash = "#"
-                const ID_name = hash.concat(anals[i])
-
-                if (anals[i] != clickedLayer){
-                    console.log(i)
-
-                    
-                    
-                    // map.setLayoutProperty(anals[i], 'visibility', 'none');
-
-                    let noclickDiv = document.querySelector(ID_name);
-                    const noclickclass = noclickDiv.classList;
-                    noclickclass.remove("checked")
-                }
-                else {
-                    // map.setLayoutProperty(anals[i], 'visibility', 'visible');
-                    // 'A-PrimStyle' = anals[i]
-                    
-                    console.log(dropDownButton.textContent)
-                    dropDownButton.textContent = e.target.text
-                    map.setPaintProperty('A-PrimStyle', 'circle-radius', radius_styling[i])
-                    map.setPaintProperty('A-Hover-point', 'circle-radius', radius_styling[i])
-                    map.setPaintProperty('A-Click-point', 'circle-radius', radius_styling[i])
-                
-                    const clickclass = sessionDiv.classList;
-                    let clickDiv = document.querySelector(ID_name);
-                    const noclickclass = clickDiv.classList;
-                    clickclass.add("checked")
-                }
-            }
-        }
-    }
-
 
 });

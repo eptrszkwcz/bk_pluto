@@ -10,7 +10,7 @@ const map = new mapboxgl.Map({
     container: 'map', // container ID
     // style: 'mapbox://styles/mapbox/streets-v12', // style URL
     style: 'mapbox://styles/ptrszkwcz/clqmt03br00g201qrfnt9442u',
-    center: [-73.98203506985122, 40.65412809925644], // starting position [lng, lat]
+    center: [-73.9541188280487, 40.72451965912298], // starting position [lng, lat]
     zoom: 14 // starting zoom
 });
 
@@ -36,18 +36,18 @@ fill_styling = [
         5, '#2dd668',
         10, '#2efc1c'],
     [ 'match', ['get','LandUse'],
-        '01', '#9e5418',
-        '02', '#9514c4',
-        '03', '#fc0303',
-        '04', '#e01075',
-        '05', '#8800ff',
-        '06', '#0398fc',
-        '07', '#ff00f7',
-        '08', '#eb7f7f',
-        '09', '#e3bb0e',
-        '10', '#1859c9',
-        '11', '#12c474',
-        '#000000']
+        '01', '#8f8f19',
+        '02', '#c2c21c',
+        '03', '#f7f726',
+        '04', '#d69a2a',
+        '05', '#d84f4c',
+        '06', '#9d64b2',
+        '07', '#9d64b2',
+        '08', '#697ef0',
+        '09', 'rgba(68,138,101,0.45)',
+        '10', '#b5b5b5',
+        '11', '#1c1c1c',
+        'rgba(0,0,0,0)']
 ]
 
 const prim_style_layer = 'BK_Pluto_4326-1r3l0b'
@@ -113,6 +113,13 @@ function toggle2() {
 
     setclasses([2,0,1])
 }
+
+// function x_close_highl(){
+//     map.setFeatureState(
+//         { source: 'source-A', sourceLayer: prim_style_layer, id: clickedPolygonId },
+//         { click: false }
+//     );
+// }
 
 map.on('load', () => {
 
@@ -252,27 +259,25 @@ map.on('load', () => {
         popup.setLngLat(getFeatureCenter(feature))
         // popup.setLngLat(e.lngLat)
         .setHTML(`
-                <div class = "pop-title">${feature.properties.name}</div>
+                <div class = "pop-title">${feature.properties.UniqueID}</div>
                 <div class = "pop-line"></div>
 
                 <div class = "pop-entry">
-                    <div class = "pop-field">Primary Fuel</div>
-                    <div class = "pop-value">${feature.properties.primary_fu}</div>
+                    <div class = "pop-field">Year Constructed</div>
+                    <div class = "pop-value">${feature.properties.YearBuilt}</div>
                 </div>
                 <div class = "pop-entry">
-                    <div class = "pop-field">Plant Capacity</div>
-                    <div class = "pop-unit">(MW)</div>
-                    <div class = "pop-value">${plant_cap}</div>
+                    <div class = "pop-field">Overall FAR</div>
+                    <div class = "pop-unit">(FAR)</div>
+                    <div class = "pop-value">${feature.properties.BuiltFAR}</div>
                 </div>
                 <div class = "pop-entry">
-                    <div class = "pop-field">Power Generation</div>
-                    <div class = "pop-unit">(GW)</div>
-                    <div class = "pop-value">${pow_gen}</div>
+                    <div class = "pop-field">Number of Floors</div>
+                    <div class = "pop-value">${feature.properties.NumFloors}</div>
                 </div>
                 <div class = "pop-entry">
-                    <div class = "pop-field">Capacity Factor</div>
-                    <div class = "pop-unit">%</div>
-                    <div class = "pop-value">${cap_fac}</div>
+                    <div class = "pop-field">Land Use</div>
+                    <div class = "pop-value">${feature.properties.LandUse}</div>
                 </div>
                   `)
         .addTo(map);
@@ -297,8 +302,10 @@ map.on('load', () => {
             );
         } 
     });
+
+    
  
-    // CLICK HIGHLIGHT CLOSE ON CLICK --------------------------------------------------------------- 
+    // CLICK HIGHLIGHT CLOSE ON CLICK ANYWHERE + on X --------------------------------------------------------------- 
     map.on('click', (e) => {
         let counter = 0;
         const quer_features = map.queryRenderedFeatures(e.point);
@@ -312,6 +319,18 @@ map.on('load', () => {
                     { source: 'source-A', sourceLayer: prim_style_layer, id: clickedPolygonId },
                     { click: false }
                 );
+        }
+        else{
+            let x_Div = document.querySelector('.mapboxgl-popup-close-button')
+
+            x_Div.addEventListener('click', function() {
+                console.log('BOOM');
+                map.setFeatureState(
+                    { source: 'source-A', sourceLayer: prim_style_layer, id: clickedPolygonId },
+                    { click: false }
+                );
+            });
+
         }
     }); 
 

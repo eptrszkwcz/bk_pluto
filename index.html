@@ -36,10 +36,10 @@ body { margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, s
     <div class = "console-block">
         <div class = "title">Brooklyn PLUTO</div>
         <div class = "leg-line"></div>
-        <div class = "proj-des">Western and Central Europe is home to over 17,000 power generation facilities. This map catalogs their location, generating capacity, and other features.</div>
+        <div class = "proj-des">Pluto is New York Cities urban land use database. It catalogs dozens of characteristics per lot. This map displays select Pluto data for the borough of Brooklyn.</div>
         <!-- <p>Source: Global Power Dataset 1.3.0, World Resources Institue 2021.</p> -->
         <br>
-        <div class = "proj-des">Source: Global Power Dataset 1.3.0, World Resources Institue 2021.</div>
+        <div class = "proj-des">Source: <a href="https://www.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page" target="_blank">WMapPluto Release 23v3.1</a>, NYC Dept of Planning.</div>
     </div>
     <div class = "console-block">
         <div class = "legend"></div>
@@ -96,7 +96,7 @@ body { margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, s
                     </div>
                     <div class = "entry-row">
                         <div class = "entry-description">
-                            Year built records the first years that the building was constructed and does not include years for building modifications.
+                            Floor Area Ratio is a measure of the overall built floor area to the lot area. Higher FARs are usually indicative of taller, higher density buildings.
                         </div>
                     </div>
                 </div>
@@ -105,23 +105,55 @@ body { margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, s
             <!-- CATEGORY LEGEND ENTRY  -->
             <div class = "legend-entry">
                 <div class = "entry-title bottom">
-                    <div class = "entry-label" id = "label-2">Zoning District</div>
+                    <div class = "entry-label" id = "label-2">Land Use Designation</div>
                     <div class = "toggle-space">
                         <div class = "toggle" id = "toggle-2" onclick="toggle2()" ></div>
                     </div>
                 </div>
                 <div class = "entry-dropdown" id="entry-2">
                     <div class = "entry-row cat">
-                        <div class = "symbol active" style="background-color: #8800ff;"></div>
-                        <div class = "row-label">Residential</div>
+                        <div class = "symbol active" style="background-color: #8f8f19;"></div>
+                        <div class = "row-label">Residential - 1-2 Family</div>
                     </div>
                     <div class = "entry-row cat">
-                        <div class = "symbol active" style="background-color: #524abe;"></div>
-                        <div class = "row-label">Industrial</div>
+                        <div class = "symbol active" style="background-color: #c2c21c;"></div>
+                        <div class = "row-label">Residential - Multi-Family Walkup</div>
+                    </div>
+                    <div class = "entry-row cat">
+                        <div class = "symbol active" style="background-color: #f7f726;"></div>
+                        <div class = "row-label">Residential - Multi-Family Elevator</div>
+                    </div>
+                    <div class = "entry-row cat">
+                        <div class = "symbol active" style="background-color: #d69a2a;"></div>
+                        <div class = "row-label">Mixed Use</div>
+                    </div>
+                    <div class = "entry-row cat">
+                        <div class = "symbol active" style="background-color: #d84f4c;"></div>
+                        <div class = "row-label">Commercial</div>
+                    </div>
+                    <div class = "entry-row cat">
+                        <div class = "symbol active" style="background-color: #9d64b2;"></div>
+                        <div class = "row-label">Industrial / Utility</div>
+                    </div>
+                    <div class = "entry-row cat">
+                        <div class = "symbol active" style="background-color: #697ef0;"></div>
+                        <div class = "row-label">Institutional</div>
+                    </div>
+                    <div class = "entry-row cat">
+                        <div class = "symbol active" style="background-color: rgba(68,138,101,0.45);"></div>
+                        <div class = "row-label">Recreation / Outdoor Space</div>
+                    </div>
+                    <div class = "entry-row cat">
+                        <div class = "symbol active" style="background-color: #b5b5b5;"></div>
+                        <div class = "row-label">Parking</div>
+                    </div>
+                    <div class = "entry-row cat">
+                        <div class = "symbol active" style="background-color: #1c1c1c;"></div>
+                        <div class = "row-label">Vacant</div>
                     </div>
                     <div class = "entry-row">
                         <div class = "entry-description">
-                            Year built records the first years that the building was constructed and does not include years for building modifications.
+                            Land use designation describes the current building typology / use that occupies the site.
                         </div>
                     </div>
                 </div>

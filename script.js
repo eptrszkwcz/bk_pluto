@@ -20,10 +20,12 @@ let clickedPolygonId = null;
 
 // const cats = ['Biomass','Coal','Gas','Geothermal','Hydro','Nuclear','Oil','Solar','Tidal','Wind'];
 // const cat_labels = ['Biomass','Coal','Gas','Geothermal','Hydro','Nuclear','Oil','Solar','Wave & Tidal','Wind'];;
-const cats = ['YearBuilt'];
-const cat_labels = ["Year Built"]
 
-var filter_cats = [];
+// REMOVE BELOW I THINK
+// const cats = ['YearBuilt'];
+// const cat_labels = ["Year Built"]
+
+// var filter_cats = [];
 
 
 fill_styling = [
@@ -51,6 +53,9 @@ fill_styling = [
 ]
 
 const prim_style_layer = 'BK_Pluto_4326-1r3l0b'
+
+
+//ESTABLISH TOGGLE FUNCTIONALITY ---------------------------------------------------------------
 
 function setclasses(intlist){
     document.getElementById("entry-".concat(intlist[0])).classList.toggle("active");
@@ -114,12 +119,6 @@ function toggle2() {
     setclasses([2,0,1])
 }
 
-// function x_close_highl(){
-//     map.setFeatureState(
-//         { source: 'source-A', sourceLayer: prim_style_layer, id: clickedPolygonId },
-//         { click: false }
-//     );
-// }
 
 map.on('load', () => {
 
@@ -173,7 +172,7 @@ map.on('load', () => {
     }); 
 
 
-    //HIHGLIGHT ON CLICK, POIMT ---------------------------------------------------------------
+    //HIHGLIGHT ON CLICK, POINT ---------------------------------------------------------------
     map.addLayer({
         'id': 'A-Click-line',
         'type': 'line',
@@ -236,7 +235,7 @@ map.on('load', () => {
         return center;
     }
 
-    // this function adds a common to numbers  
+    // this function adds a comma to numbers  
     function numberWithCommas(x) {
         x = x.toString();
         var pattern = /(-?\d+)(\d{3})/;
@@ -305,7 +304,7 @@ map.on('load', () => {
 
     
  
-    // CLICK HIGHLIGHT CLOSE ON CLICK ANYWHERE + on X --------------------------------------------------------------- 
+    // CLICK HIGHLIGHT CLOSE ON CLICK ANYWHERE + ON "X" --------------------------------------------------------------- 
     map.on('click', (e) => {
         let counter = 0;
         const quer_features = map.queryRenderedFeatures(e.point);

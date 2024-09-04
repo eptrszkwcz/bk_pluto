@@ -10,11 +10,11 @@
   }
 
 .legendtit {
-font-size: 16px;
-font-weight: 600;
-line-height: 20px;
-color: var(--prim_color);
-margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--prim_color);
+    margin-bottom: 15px;
 }
 
 .dropdown {
@@ -36,7 +36,7 @@ button{
 }
 
 button:hover{
-background-color: var(--bghov_color);
+    background-color: var(--bghov_color);
 }
 
 .dropdown-options {

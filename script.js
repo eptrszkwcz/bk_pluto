@@ -2,9 +2,12 @@
 var cssclass = document.querySelector(":root");
 var mystyle = window.getComputedStyle(cssclass);
 
-const filterGroup = document.getElementById('filter-group');
-
 mapboxgl.accessToken = 'pk.eyJ1IjoicHRyc3prd2N6IiwiYSI6ImNscGkxOHVvbjA2eW8ybG80NDJ3ajBtMWwifQ.L2qe-aJO35nls3sfd0WKPA';
+
+
+//ASSIGN CONSTANTS ---------------------------------------------------------------
+
+const filterGroup = document.getElementById('filter-group');
  
 const map = new mapboxgl.Map({
     container: 'map', // container ID
@@ -18,16 +21,7 @@ const map = new mapboxgl.Map({
 let hoveredPolygonId = null;
 let clickedPolygonId = null;
 
-// const cats = ['Biomass','Coal','Gas','Geothermal','Hydro','Nuclear','Oil','Solar','Tidal','Wind'];
-// const cat_labels = ['Biomass','Coal','Gas','Geothermal','Hydro','Nuclear','Oil','Solar','Wave & Tidal','Wind'];;
-
-// REMOVE BELOW I THINK
-// const cats = ['YearBuilt'];
-// const cat_labels = ["Year Built"]
-
-// var filter_cats = [];
-
-
+// Here we assign styling for the different options (geometry will remain the same) 
 fill_styling = [
     [ 'interpolate', ['linear'], ['get', 'YearBuilt'],
         1900, '#142a8c',
@@ -55,8 +49,9 @@ fill_styling = [
 const prim_style_layer = 'BK_Pluto_4326-1r3l0b'
 
 
-//ESTABLISH TOGGLE FUNCTIONALITY ---------------------------------------------------------------
+//SYMBOLOGY TOGGLE - IN LEGEND ---------------------------------------------------------------
 
+// These functions turn on/off the relevant legend material
 function setclasses(intlist){
     document.getElementById("entry-".concat(intlist[0])).classList.toggle("active");
     document.getElementById("toggle-".concat(intlist[0])).classList.toggle("active");
@@ -69,7 +64,7 @@ function setclasses(intlist){
     }
 }
 
-let viz_type = 3; //set this to list length of fill_styling (or any random integer not in range list length)
+let viz_type = 3; //set this to list length of fill_styling (or any integer not in range list length)
 
 function toggle0() {
     let viz_status = map.getLayoutProperty('A-PrimStyle', 'visibility');
@@ -83,7 +78,7 @@ function toggle0() {
         map.setLayoutProperty('A-PrimStyle', 'visibility', 'none');
         viz_type = 3;
     }
-
+    
     setclasses([0,1,2])
 }
 
@@ -143,7 +138,7 @@ map.on('load', () => {
         });
 
 
-    //HIHGLIGHT ON HOVER, POINT ---------------------------------------------------------------
+    //HIHGLIGHT ON HOVER, POLYGON ---------------------------------------------------------------
     map.addLayer({
         'id': 'A-Hover-line',
         'type': 'line',
@@ -154,7 +149,7 @@ map.on('load', () => {
             'line-color': [ 'case', 
                 ['boolean', ['feature-state', 'hover'], false], mystyle.getPropertyValue("--highl_color"), '#636363'],
             'line-width': [ 'case', 
-                ['boolean', ['feature-state', 'hover'], false], 2.5, 0],
+                ['boolean', ['feature-state', 'hover'], false], 1.5, 0],
         }
     }); 
 
@@ -167,7 +162,7 @@ map.on('load', () => {
         'paint': {
             'fill-color': mystyle.getPropertyValue("--highl_color"),
             'fill-opacity': [ 'case', 
-                ['boolean', ['feature-state', 'hover'], false], 0.5, 0],
+                ['boolean', ['feature-state', 'hover'], false], 0.15, 0],
         }
     }); 
 
@@ -183,7 +178,7 @@ map.on('load', () => {
             'line-color': [ 'case', 
                 ['boolean', ['feature-state', 'click'], false], mystyle.getPropertyValue("--highl_color"), '#636363'],
             'line-width': [ 'case', 
-                ['boolean', ['feature-state', 'click'], false], 4, 0],
+                ['boolean', ['feature-state', 'click'], false], 2.5, 0],
         }
     }); 
 
@@ -196,7 +191,7 @@ map.on('load', () => {
         'paint': {
             'fill-color': mystyle.getPropertyValue("--highl_color"),
             'fill-opacity': [ 'case', 
-                ['boolean', ['feature-state', 'click'], false], 0.5, 0],
+                ['boolean', ['feature-state', 'click'], false], 0.3, 0],
         }
     }); 
 

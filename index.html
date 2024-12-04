@@ -38,8 +38,9 @@ body { margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, s
         <br>
         <div class = "proj-des">Source: <a href="https://www.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page" target="_blank">WMapPluto Release 23v3.1</a>, NYC Dept of Planning.</div>
     </div>
+    
     <div class = "console-block">
-        <div class = "legend"></div>
+        <div class = "legend">
 
             <!-- GRADIENT LEGEND ENTRY  -->
             <div class = "legend-entry">
@@ -104,7 +105,7 @@ body { margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, s
                 <div class = "entry-title bottom">
                     <div class = "entry-label" id = "label-2">Land Use Designation</div>
                     <div class = "toggle-space">
-                        <div class = "toggle" id = "toggle-2" onclick="toggle2()" ></div>
+                        <div class = "toggles" id = "toggle-2" onclick="toggle2()" ></div>
                     </div>
                 </div>
                 <div class = "entry-dropdown" id="entry-2">
@@ -159,6 +160,31 @@ body { margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, s
 
         </div>
     </div>
+
+    <div class = "console-block">
+        <div class = "legend">
+            <!--  LEGEND ENTRY (NO DROPDOWN) -->
+            <div class = "legend-entry">
+                <div class = "entry-title top">
+                    <div class = "entry-label" id = "label-3">Subway Routes & Stations</div>
+                    <div class = "toggle-space">
+                        <div class = "toggle" id = "toggle-3" onclick="toggle_sub()"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class = "legend-entry">
+                <div class = "entry-title bottom">
+                    <div class = "entry-label" id = "label-4">DTBK Rezoning Areas</div>
+                    <div class = "toggle-space">
+                        <div class = "toggle" id = "toggle-4" onclick="toggle_rezone()"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 </div>
     
 </div>

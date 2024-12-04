@@ -112,7 +112,35 @@ function toggle2() {
     }
 
     setclasses([2,0,1])
-}
+};
+
+function toggle_sub(){
+    let viz_status = map.getLayoutProperty('C-subway-routes', 'visibility');
+    if (viz_status === "none"){
+        map.setLayoutProperty('C-subway-routes', 'visibility','visible');
+        map.setLayoutProperty('D-subway-stations', 'visibility','visible');
+    }
+    else {
+        map.setLayoutProperty('C-subway-routes', 'visibility','none');
+        map.setLayoutProperty('D-subway-stations', 'visibility','none');
+    }
+    document.getElementById("toggle-3").classList.toggle("active");
+    document.getElementById("label-3").classList.toggle("active");
+};
+
+function toggle_rezone(){
+    let viz_status = map.getLayoutProperty('E-rezone', 'visibility');
+    if (viz_status === "none"){
+        map.setLayoutProperty('E-rezone', 'visibility','visible');
+        map.setLayoutProperty('E-rezone-line', 'visibility','visible');
+    }
+    else {
+        map.setLayoutProperty('E-rezone', 'visibility','none');
+        map.setLayoutProperty('E-rezone-line', 'visibility','none');
+    }
+    document.getElementById("toggle-4").classList.toggle("active");
+    document.getElementById("label-4").classList.toggle("active");
+};
 
 
 map.on('load', () => {
@@ -180,6 +208,7 @@ map.on('load', () => {
         'source-layer':'NYC_Subway_Lines-7bb7c4',
         'layout': {
             'line-cap': 'round',
+            'visibility': 'none'
         },
         'paint': {
             // 'line-blur': 2,
@@ -204,11 +233,13 @@ map.on('load', () => {
     });
 
     map.addLayer({
-        'id': 'D-subway-station',
+        'id': 'D-subway-stations',
         'type': 'circle',
         'source': 'source-D', 
         'source-layer':'NYC_Subway_Stations-933gtq',
-        'layout': {},
+        'layout': {
+            'visibility': 'none'
+        },
         'paint': {
             'circle-radius': 4,
             'circle-color': '#CCCCCC', 
@@ -227,6 +258,9 @@ map.on('load', () => {
         'type': 'fill',
         'source': 'source-E', 
         'source-layer':'DTBK_rezone-33cnpa',
+        'layout': {
+            'visibility': 'none'
+        },
         'paint': {
             'fill-opacity': 0.2,
             'fill-color': '#CCCCCC'
@@ -238,6 +272,9 @@ map.on('load', () => {
         'type': 'line',
         'source': 'source-E', 
         'source-layer':'DTBK_rezone-33cnpa',
+        'layout': {
+            'visibility': 'none'
+        },
         'paint': {
             'line-color': '#CCCCCC',
             'line-opacity': 0.7,

@@ -13,7 +13,7 @@ const map = new mapboxgl.Map({
     container: 'map', // container ID
     // style: 'mapbox://styles/mapbox/streets-v12', // style URL
     style: 'mapbox://styles/ptrszkwcz/clqmt03br00g201qrfnt9442u',
-    center: [-73.9541188280487, 40.72451965912298], // starting position [lng, lat]
+    center: [ -73.98920580270914, 40.692268546813274], // starting position [lng, lat]
     zoom: 14 // starting zoom
 });
 
@@ -46,7 +46,7 @@ fill_styling = [
         'rgba(0,0,0,0)']
 ]
 
-const prim_style_layer = 'BK_Pluto_4326-1r3l0b'
+const prim_style_layer = 'BKSmall_Pluto_4326-ace235'
 
 
 //SYMBOLOGY TOGGLE - IN LEGEND ---------------------------------------------------------------
@@ -117,23 +117,131 @@ function toggle2() {
 
 map.on('load', () => {
 
+    // THIS IS ALL OF BK PLUTO DATA
+    // map.addSource('source-A', {
+    //     'type': 'vector',
+    //     'url': "mapbox://ptrszkwcz.ckwtmvi8",
+    //     'promoteId':'UniqueID' // Because mapbox fucks up when assigning IDs, make own IDs in QGIS and then set here!!!
+    // });
+
     map.addSource('source-A', {
         'type': 'vector',
-        'url': "mapbox://ptrszkwcz.ckwtmvi8",
+        'url': "mapbox://ptrszkwcz.2ogimsca",
         'promoteId':'UniqueID' // Because mapbox fucks up when assigning IDs, make own IDs in QGIS and then set here!!!
     });
 
-       map.addLayer({
-        'id': 'A-PrimStyle',
-        'type': 'fill',
-        'source': 'source-A', 
-        'source-layer':prim_style_layer,
+    map.addLayer({
+    'id': 'A-PrimStyle',
+    'type': 'fill',
+    'source': 'source-A', 
+    'source-layer':prim_style_layer,
+    'layout': {
+        'visibility': 'none'
+    },
+    'paint': {
+        'fill-opacity': 0.7,
+        'fill-color': fill_styling[0]
+        },
+    });
+
+    // Add AOI boundary geometry 
+    map.addSource('source-B', {
+        'type': 'vector',
+        'url': "mapbox://ptrszkwcz.059uemzf",
+    });
+
+    map.addLayer({
+        'id': 'B-boundary',
+        'type': 'line',
+        'source': 'source-B', 
+        'source-layer':'BK_AOI-0hznw2',
         'layout': {
-            'visibility': 'none'
+            'line-cap': 'round',
         },
         'paint': {
-            'fill-opacity': 0.7,
-            'fill-color': fill_styling[0]
+            // 'line-blur': 2,
+            'line-color': '#7de0ff',
+            'line-opacity': 0.8,
+            'line-width': 2,
+            'line-dasharray': [2,6],
+            },
+    })
+
+    // Add Subway Lines
+    map.addSource('source-C', {
+        'type': 'vector',
+        'url': "mapbox://ptrszkwcz.1s0ac82p",
+    });
+
+    map.addLayer({
+        'id': 'C-subway-routes',
+        'type': 'line',
+        'source': 'source-C', 
+        'source-layer':'NYC_Subway_Lines-7bb7c4',
+        'layout': {
+            'line-cap': 'round',
+        },
+        'paint': {
+            // 'line-blur': 2,
+            'line-color': ['match', ['get','sub_line'],
+            '123', '#c90e0e',
+            '456', '#00884f',
+            'ACE', '#0839e8',
+            'BDFM', '#ff8d01',
+            'G', '#7dd600',
+            'NQRW', '#e3db01',
+            'rgba(0,0,0,0)'],
+            'line-opacity': 0.5,
+            'line-width': 1,
+            // 'line-dasharray': [2,6],
+            },
+    })
+
+    // Add Subway Stations
+    map.addSource('source-D', {
+        'type': 'vector',
+        'url': "mapbox://ptrszkwcz.7g35l44g",
+    });
+
+    map.addLayer({
+        'id': 'D-subway-station',
+        'type': 'circle',
+        'source': 'source-D', 
+        'source-layer':'NYC_Subway_Stations-933gtq',
+        'layout': {},
+        'paint': {
+            'circle-radius': 4,
+            'circle-color': '#CCCCCC', 
+            'circle-opacity': 0.8
+            },
+    });
+
+    // Add DTBK Rezoning Areas
+    map.addSource('source-E', {
+    'type': 'vector',
+    'url': "mapbox://ptrszkwcz.akpi8dsb",
+    });
+
+    map.addLayer({
+        'id': 'E-rezone',
+        'type': 'fill',
+        'source': 'source-E', 
+        'source-layer':'DTBK_rezone-33cnpa',
+        'paint': {
+            'fill-opacity': 0.2,
+            'fill-color': '#CCCCCC'
+            },
+        });
+
+    map.addLayer({
+        'id': 'E-rezone-line',
+        'type': 'line',
+        'source': 'source-E', 
+        'source-layer':'DTBK_rezone-33cnpa',
+        'paint': {
+            'line-color': '#CCCCCC',
+            'line-opacity': 0.7,
+            'line-width': 2,
             },
         });
 

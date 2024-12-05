@@ -191,7 +191,8 @@ map.on('load', () => {
             'line-color': '#7de0ff',
             'line-opacity': 0.8,
             'line-width': 2,
-            'line-dasharray': [2,6],
+            'line-dasharray': [2,6], 
+            // "line-dasharray": [['interpolate', ['linear'], ['zoom'], 4, 1, 15, 4],['interpolate', ['linear'], ['zoom'], 4, 2, 15, 8]],
             },
     })
 
@@ -208,7 +209,7 @@ map.on('load', () => {
         'source-layer':'NYC_Subway_Lines-7bb7c4',
         'layout': {
             'line-cap': 'round',
-            'visibility': 'none'
+            'visibility': 'visible'
         },
         'paint': {
             // 'line-blur': 2,
@@ -238,12 +239,14 @@ map.on('load', () => {
         'source': 'source-D', 
         'source-layer':'NYC_Subway_Stations-933gtq',
         'layout': {
-            'visibility': 'none'
+            'visibility': 'visible'
         },
         'paint': {
             'circle-radius': 4,
             'circle-color': '#CCCCCC', 
-            'circle-opacity': 0.8
+            'circle-opacity': 0.8,
+            'circle-stroke-color': '#000000',
+            'circle-stroke-width': 1,
             },
     });
 
@@ -278,7 +281,7 @@ map.on('load', () => {
         'paint': {
             'line-color': '#CCCCCC',
             'line-opacity': 0.7,
-            'line-width': 2,
+            'line-width': 1.5,
             },
         });
 

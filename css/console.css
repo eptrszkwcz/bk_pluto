@@ -4,6 +4,7 @@
     left: 0;
     margin: 15px;
     width: 340px;
+    overflow-y:scroll;
 }
 
 .console-block {
